@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Отметка</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>QR Отметка</h1>
+        <p class="subtitle">
+          Отсканируйте QR-код, чтобы отметиться и оставить свой след
+        </p>
+      </header>
+
+      <div class="main-content">
+        <div class="counter-section">
+          <h2 class="counter-title">Общее количество отметившихся</h2>
+          <div class="counter" id="counter">0</div>
+          <button class="click-btn" id="clickBtn">
+            <i class="fas fa-hand-pointer"></i> Отметиться
+          </button>
+          <div class="clicked-message" id="clickedMessage">
+            <i class="fas fa-check-circle"></i> Вы уже отметились!
+          </div>
+        </div>
+
+        <div class="comment-section">
+          <h2 class="comment-title">Оставить комментарий</h2>
+          <form id="commentForm">
+            <div class="form-group">
+              <label for="name">Ваше имя</label>
+              <input type="text" id="name" name="name" required />
+            </div>
+            <div class="form-group">
+              <label for="comment">Ваш комментарий</label>
+              <textarea id="comment" name="comment" required></textarea>
+            </div>
+            <div class="form-group">
+              <div class="file-upload">
+                <input
+                  type="file"
+                  id="image"
+                  name="image"
+                  accept="image/*"
+                  class="file-upload-input"
+                />
+                <label for="image" class="file-upload-label">
+                  <div class="file-upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                  </div>
+                  <div>Загрузите фото (необязательно)</div>
+                </label>
+              </div>
+              <div class="preview-container" id="previewContainer">
+                <label>Предпросмотр:</label>
+                <img id="imagePreview" class="image-preview" />
+              </div>
+            </div>
+            <button type="submit" class="submit-btn">
+              <i class="fas fa-paper-plane"></i> Отправить
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="comments-list">
+        <h2 class="comments-title">Комментарии участников</h2>
+        <div id="commentsContainer">
+          <div class="empty-comments">
+            <i
+              class="fas fa-comment-slash"
+              style="font-size: 2rem; margin-bottom: 1rem"
+            ></i>
+            <p>Пока нет комментариев. Будьте первым!</p>
+          </div>
+        </div>
+      </div>
+
+      <footer>
+        <p>© 2023 QR Отметка. Все права защищены.</p>
+      </footer>
+    </div>
+
+    <div class="toast" id="toast">
+      <i class="fas fa-check-circle"></i>
+      <span id="toastMessage">Сообщение отправлено!</span>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
