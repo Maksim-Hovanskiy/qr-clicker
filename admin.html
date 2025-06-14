@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title></title>
+  </head>
+  <body>
+    <!DOCTYPE html>
+    <html lang="ru">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Админ-панель QR Отметка</title>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+        />
+        <style>
+          * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+          }
+
+          body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+          }
+
+          .admin-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+          }
+
+          header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            text-align: center;
+          }
+
+          h1 {
+            font-size: 2rem;
+          }
+
+          .login-section {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 30px;
+            background: white;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+          }
+
+          .login-section h2 {
+            margin-bottom: 20px;
+            text-align: center;
+          }
+
+          .form-group {
+            margin-bottom: 20px;
+          }
+
+          .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+          }
+
+          .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+          }
+
+          .login-btn {
+            width: 100%;
+            padding: 12px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+          }
+
+          .login-btn:hover {
+            background-color: #1a252f;
+          }
+
+          .admin-content {
+            display: none;
+          }
+
+          .stats-section {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+          }
+
+          .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            min-width: 200px;
+            margin: 10px;
+          }
+
+          .stat-card h3 {
+            color: #7f8c8d;
+            margin-bottom: 10px;
+          }
+
+          .stat-card p {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #2c3e50;
+          }
+
+          .comments-list {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+          }
+
+          .comment-card {
+            border: 1px solid #eee;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            position: relative;
+          }
+
+          .comment-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+          }
+
+          .comment-avatar {
+            width: 40px;
+            height: 40px;
+            background-color: #3498db;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            font-weight: bold;
+          }
+
+          .comment-author {
+            font-weight: bold;
+          }
+
+          .comment-date {
+            font-size: 0.8rem;
+            color: #7f8c8d;
+          }
+
+          .comment-text {
+            margin-bottom: 10px;
+          }
+
+          .comment-image {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 5px;
+            margin-top: 10px;
+          }
+
+          .comment-actions {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+          }
+
+          .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            margin-left: 10px;
+            padding: 5px;
+          }
+
+          .edit-btn {
+            color: #3498db;
+          }
+
+          .delete-btn {
+            color: #e74c3c;
+          }
+
+          .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+          }
+
+          .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            width: 90%;
+            max-width: 500px;
+          }
+
+          .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+          }
+
+          .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+          }
+
+          .modal-footer {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 20px;
+          }
+
+          .save-btn,
+          .cancel-btn {
+            padding: 8px 15px;
+            margin-left: 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+          }
+
+          .save-btn {
+            background-color: #2c3e50;
+            color: white;
+          }
+
+          .cancel-btn {
+            background-color: #95a5a6;
+            color: white;
+          }
+
+          .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #2ecc71;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            display: none;
+            z-index: 1000;
+          }
+
+          @media (max-width: 768px) {
+            .stat-card {
+              min-width: 150px;
+            }
+          }
+        </style>
+      </head>
+      <body>
+        <div class="admin-container">
+          <header>
+            <h1>Админ-панель QR Отметка</h1>
+          </header>
+
+          <div id="loginSection" class="login-section">
+            <h2>Вход в админ-панель</h2>
+            <form id="loginForm">
+              <div class="form-group">
+                <label for="username">Логин</label>
+                <input type="text" id="username" required />
+              </div>
+              <div class="form-group">
+                <label for="password">Пароль</label>
+                <input type="password" id="password" required />
+              </div>
+              <button type="submit" class="login-btn">Войти</button>
+            </form>
+          </div>
+
+          <div id="adminContent" class="admin-content">
+            <div class="stats-section">
+              <div class="stat-card">
+                <h3>Всего отметок</h3>
+                <p id="totalClicks">0</p>
+              </div>
+              <div class="stat-card">
+                <h3>Всего комментариев</h3>
+                <p id="totalComments">0</p>
+              </div>
+              <div class="stat-card">
+                <h3>Комментариев с фото</h3>
+                <p id="commentsWithImages">0</p>
+              </div>
+            </div>
+
+            <div class="comments-list">
+              <h2>Управление комментариями</h2>
+              <div id="adminCommentsContainer"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Модальное окно редактирования -->
+        <div id="editModal" class="modal">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h3>Редактировать комментарий</h3>
+              <button class="close-btn" id="closeModalBtn">&times;</button>
+            </div>
+            <form id="editCommentForm">
+              <input type="hidden" id="editCommentId" />
+              <div class="form-group">
+                <label for="editName">Имя</label>
+                <input type="text" id="editName" required />
+              </div>
+              <div class="form-group">
+                <label for="editComment">Комментарий</label>
+                <textarea
+                  id="editComment"
+                  rows="4"
+                  required
+                  style="width: 100%; padding: 10px"
+                ></textarea>
+              </div>
+              <div class="form-group">
+                <label>Изображение</label>
+                <div id="editImagePreview" style="margin-top: 10px"></div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="cancel-btn" id="cancelEditBtn">
+                  Отмена
+                </button>
+                <button type="submit" class="save-btn">Сохранить</button>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Уведомление -->
+        <div id="toast" class="toast">
+          <span id="toastMessage"></span>
+        </div>
+
+        <script>
+          document.addEventListener("DOMContentLoaded", function () {
+            // Элементы DOM
+            const loginSection = document.getElementById("loginSection");
+            const adminContent = document.getElementById("adminContent");
+            const loginForm = document.getElementById("loginForm");
+            const usernameInput = document.getElementById("username");
+            const passwordInput = document.getElementById("password");
+
+            const totalClicksElement = document.getElementById("totalClicks");
+            const totalCommentsElement =
+              document.getElementById("totalComments");
+            const commentsWithImagesElement =
+              document.getElementById("commentsWithImages");
+            const adminCommentsContainer = document.getElementById(
+              "adminCommentsContainer"
+            );
+
+            const editModal = document.getElementById("editModal");
+            const closeModalBtn = document.getElementById("closeModalBtn");
+            const cancelEditBtn = document.getElementById("cancelEditBtn");
+            const editCommentForm = document.getElementById("editCommentForm");
+            const editNameInput = document.getElementById("editName");
+            const editCommentInput = document.getElementById("editComment");
+            const editCommentIdInput = document.getElementById("editCommentId");
+            const editImagePreview =
+              document.getElementById("editImagePreview");
+
+            const toast = document.getElementById("toast");
+            const toastMessage = document.getElementById("toastMessage");
+
+            // Пароль администратора (в реальном проекте это должно быть на сервере)
+            const ADMIN_CREDENTIALS = {
+              username: "abugag",
+              password: "LoveLoam",
+            };
+
+            // Проверка аутентификации
+            function isAuthenticated() {
+              return localStorage.getItem("adminAuthenticated") === "true";
+            }
+
+            // Показать уведомление
+            function showToast(message, isError = false) {
+              toast.style.backgroundColor = isError ? "#e74c3c" : "#2ecc71";
+              toastMessage.textContent = message;
+              toast.style.display = "block";
+
+              setTimeout(() => {
+                toast.style.display = "none";
+              }, 3000);
+            }
+
+            // Загрузка данных
+            function loadAdminData() {
+              // Получаем данные из localStorage
+              const clickCount = localStorage.getItem("qrCounter") || "0";
+              const comments =
+                JSON.parse(localStorage.getItem("comments")) || [];
+
+              // Обновляем статистику
+              totalClicksElement.textContent = clickCount;
+              totalCommentsElement.textContent = comments.length;
+
+              const withImages = comments.filter(
+                (comment) => comment.image
+              ).length;
+              commentsWithImagesElement.textContent = withImages;
+
+              // Загружаем комментарии
+              renderComments(comments);
+            }
+
+            // Отображение комментариев
+            function renderComments(comments) {
+              adminCommentsContainer.innerHTML = "";
+
+              if (comments.length === 0) {
+                adminCommentsContainer.innerHTML =
+                  "<p>Нет комментариев для отображения</p>";
+                return;
+              }
+
+              comments.forEach((comment, index) => {
+                const commentCard = document.createElement("div");
+                commentCard.className = "comment-card";
+
+                // Заголовок комментария
+                const commentHeader = document.createElement("div");
+                commentHeader.className = "comment-header";
+
+                const commentAvatar = document.createElement("div");
+                commentAvatar.className = "comment-avatar";
+                commentAvatar.textContent = comment.name
+                  .charAt(0)
+                  .toUpperCase();
+
+                const headerContent = document.createElement("div");
+
+                const commentAuthor = document.createElement("div");
+                commentAuthor.className = "comment-author";
+                commentAuthor.textContent = comment.name;
+
+                const commentDate = document.createElement("div");
+                commentDate.className = "comment-date";
+                commentDate.textContent = new Date(
+                  comment.date
+                ).toLocaleString();
+
+                headerContent.appendChild(commentAuthor);
+                headerContent.appendChild(commentDate);
+                commentHeader.appendChild(commentAvatar);
+                commentHeader.appendChild(headerContent);
+
+                // Текст комментария
+                const commentText = document.createElement("div");
+                commentText.className = "comment-text";
+                commentText.textContent = comment.comment;
+
+                // Изображение (если есть)
+                let commentImage = null;
+                if (comment.image) {
+                  commentImage = document.createElement("img");
+                  commentImage.className = "comment-image";
+                  commentImage.src = comment.image;
+                }
+
+                // Кнопки действий
+                const commentActions = document.createElement("div");
+                commentActions.className = "comment-actions";
+
+                const editBtn = document.createElement("button");
+                editBtn.className = "action-btn edit-btn";
+                editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+                editBtn.onclick = () => openEditModal(index, comment);
+
+                const deleteBtn = document.createElement("button");
+                deleteBtn.className = "action-btn delete-btn";
+                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
+                deleteBtn.onclick = () => deleteComment(index);
+
+                commentActions.appendChild(editBtn);
+                commentActions.appendChild(deleteBtn);
+
+                // Собираем карточку
+                commentCard.appendChild(commentHeader);
+                commentCard.appendChild(commentText);
+                if (commentImage) commentCard.appendChild(commentImage);
+                commentCard.appendChild(commentActions);
+
+                adminCommentsContainer.appendChild(commentCard);
+              });
+            }
+
+            // Удаление комментария
+            function deleteComment(index) {
+              if (!confirm("Вы уверены, что хотите удалить этот комментарий?"))
+                return;
+
+              const comments = JSON.parse(localStorage.getItem("comments"));
+              comments.splice(index, 1);
+              localStorage.setItem("comments", JSON.stringify(comments));
+
+              loadAdminData();
+              showToast("Комментарий удален");
+            }
+
+            // Открытие модального окна редактирования
+            function openEditModal(index, comment) {
+              editCommentIdInput.value = index;
+              editNameInput.value = comment.name;
+              editCommentInput.value = comment.comment;
+
+              editImagePreview.innerHTML = "";
+              if (comment.image) {
+                const img = document.createElement("img");
+                img.src = comment.image;
+                img.style.maxWidth = "100%";
+                img.style.maxHeight = "200px";
+                editImagePreview.appendChild(img);
+              }
+
+              editModal.style.display = "flex";
+            }
+
+            // Закрытие модального окна
+            function closeEditModal() {
+              editModal.style.display = "none";
+            }
+
+            // Обработка входа
+            loginForm.addEventListener("submit", function (e) {
+              e.preventDefault();
+
+              const username = usernameInput.value;
+              const password = passwordInput.value;
+
+              if (
+                username === ADMIN_CREDENTIALS.username &&
+                password === ADMIN_CREDENTIALS.password
+              ) {
+                localStorage.setItem("adminAuthenticated", "true");
+                loginSection.style.display = "none";
+                adminContent.style.display = "block";
+                loadAdminData();
+              } else {
+                showToast("Неверные учетные данные", true);
+              }
+            });
+
+            // Обработка редактирования комментария
+            editCommentForm.addEventListener("submit", function (e) {
+              e.preventDefault();
+
+              const index = parseInt(editCommentIdInput.value);
+              const comments = JSON.parse(localStorage.getItem("comments"));
+
+              comments[index].name = editNameInput.value;
+              comments[index].comment = editCommentInput.value;
+
+              localStorage.setItem("comments", JSON.stringify(comments));
+              closeEditModal();
+              loadAdminData();
+              showToast("Комментарий обновлен");
+            });
+
+            // Закрытие модального окна
+            closeModalBtn.addEventListener("click", closeEditModal);
+            cancelEditBtn.addEventListener("click", closeEditModal);
+
+            // Проверка аутентификации при загрузке
+            if (isAuthenticated()) {
+              loginSection.style.display = "none";
+              adminContent.style.display = "block";
+              loadAdminData();
+            }
+          });
+        </script>
+      </body>
+    </html>
+  </body>
+</html>
